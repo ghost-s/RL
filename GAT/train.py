@@ -68,7 +68,7 @@ def train(epoch):
     t = time.time()
     model.train()
     optimizer.zero_grad()
-    output = model(features, adj)
+    output = model(features, adj, epoch)
     #  https://blog.csdn.net/qq_22210253/article/details/85229988 一篇讲null_loss很清晰的博客
     loss_train = F.nll_loss(output[idx_train], labels[idx_train])
     acc_train = accuracy(output[idx_train], labels[idx_train])
@@ -79,7 +79,7 @@ def train(epoch):
         # Evaluate validation set performance separately,
         # deactivates dropout during validation run.
         model.eval()
-        output = model(features, adj)
+        output = model(features, adj, epoch)
 
     loss_val = F.nll_loss(output[idx_val], labels[idx_val])
     acc_val = accuracy(output[idx_val], labels[idx_val])
@@ -95,7 +95,7 @@ def train(epoch):
 
 def compute_test():
     model.eval()
-    output = model(features, adj)
+    output = model(features, adj, args.epochs - 1)
     loss_test = F.nll_loss(output[idx_test], labels[idx_test])
     acc_test = accuracy(output[idx_test], labels[idx_test])
     print("Test set results:",
