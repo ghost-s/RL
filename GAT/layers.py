@@ -27,6 +27,9 @@ class GraphAttentionLayer(nn.Module):
         Wh = torch.mm(h, self.W) # h.shape: (N, in_features), Wh.shape: (N, out_features)
         e = self._prepare_attentional_mechanism_input(Wh)
 
+        if self.training:
+            e = self.DropKey(x)
+        
         zero_vec = -9e15*torch.ones_like(e)
         if epoach == 99:
             if not os.path.exists(path):  # 如果不存在路径，则创建这个路径
@@ -77,4 +80,9 @@ class GraphAttentionLayer(nn.Module):
                 if titles:
                     ax.set_title(titles[j])
         fig.colorbar(pcm, ax=axes, shrink=0.6)
+    
+    # 用在注意力中确实可以提升测试准确率
+     def Dropkey(self, x):
+        m_r = torch.ones_like(x) * self.dropout
+        return x + torch.bernoulli(m_r) * (-1e12)
 
