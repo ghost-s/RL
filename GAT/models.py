@@ -21,5 +21,10 @@ class GAT(nn.Module):
         x = F.dropout(x, self.dropout, training=self.training)
         x = F.elu(self.out_att(x, adj, epoach))
         return F.log_softmax(x, dim=1)
+    
+    # 不适合直接替换第一个 F.dropout, x此时是独热编码；单独替换第二个时，效果也不好，有待继续探究
+    def Dropkey(self, x):
+        m_r = torch.ones_like(x) * self.dropout
+        return x + torch.bernoulli(m_r) * (-1e12)
 
 
