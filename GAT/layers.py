@@ -7,6 +7,10 @@ path = "D:/MADDPG/GAT"
 
 
 class GraphAttentionLayer(nn.Module):
+     '''
+    input [Batch, num_agents, in_features]        adjective matrix
+    output [Batch, num_agents, out_features]
+    '''
     def __init__(self, in_features, out_features, dropout, alpha, concat=True):
         super(GraphAttentionLayer, self).__init__()
         self.dropout = dropout
@@ -28,7 +32,7 @@ class GraphAttentionLayer(nn.Module):
         e = self._prepare_attentional_mechanism_input(Wh)
 
         if self.training:
-            e = self.DropKey(x)
+            e = self.DropKey(e)
         
         zero_vec = -9e15*torch.ones_like(e)
         if epoach == 99:
